@@ -1,6 +1,8 @@
 const { Client, GatewayIntentBits } = require("discord.js");
 const fs = require("fs");
+const express = require("express"); // Express for dummy server
 
+// ----- Discord Bot -----
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -16,6 +18,10 @@ let keys = {};
 if (fs.existsSync("keys.json")) {
     keys = JSON.parse(fs.readFileSync("keys.json", "utf8"));
 }
+
+client.on("ready", () => {
+    console.log(`Logged in as ${client.user.tag}!`); // Now should show in Render logs
+});
 
 client.on("messageCreate", async message => {
     if (message.author.bot) return;
@@ -50,3 +56,9 @@ client.on("messageCreate", async message => {
 });
 
 client.login(TOKEN);
+
+// ----- Express Dummy Server -----
+const app = express();
+const PORT = process.env.PORT || 3000;
+app.get("/", (req, res) => res.send("Bot is running!"));
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
